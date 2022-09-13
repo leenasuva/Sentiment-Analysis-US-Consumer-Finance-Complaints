@@ -1,0 +1,1913 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.10.011">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.10.011" expanded="true" name="Process" origin="EXPORTED_TURBOPREP">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Data Retrieve" width="90" x="112" y="187">
+        <process expanded="true">
+          <operator activated="true" class="retrieve" compatibility="9.10.011" expanded="true" height="68" name="Retrieve" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+            <parameter key="repository_entry" value="consumer_complaints"/>
+            <description align="center" color="transparent" colored="false" width="126">Loading consumer_complaints</description>
+          </operator>
+          <operator activated="true" class="retrieve" compatibility="9.10.011" expanded="true" height="68" name="Retrieve (2)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="136">
+            <parameter key="repository_entry" value="consumer_complaints"/>
+            <description align="center" color="transparent" colored="false" width="126">Loading consumer_complaints (2)</description>
+          </operator>
+          <operator activated="true" class="retrieve" compatibility="9.10.011" expanded="true" height="68" name="Retrieve (3)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="238">
+            <parameter key="repository_entry" value="consumer_complaints"/>
+            <description align="center" color="transparent" colored="false" width="126">Loading consumer_complaints (2)</description>
+          </operator>
+          <connect from_op="Retrieve" from_port="output" to_port="out 1"/>
+          <connect from_op="Retrieve (2)" from_port="output" to_port="out 2"/>
+          <connect from_op="Retrieve (3)" from_port="output" to_port="out 3"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+          <portSpacing port="sink_out 3" spacing="0"/>
+          <portSpacing port="sink_out 4" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Data Preparation" width="90" x="246" y="187">
+        <process expanded="true">
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Unify Data Types" width="90" x="45" y="34">
+            <process expanded="true">
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (10)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (10)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (10)" from_port="example set output" to_op="Text to Nominal" to_port="example set input"/>
+                  <connect from_op="Text to Nominal" from_port="example set output" to_op="Numerical to Real" to_port="example set input"/>
+                  <connect from_op="Numerical to Real" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (3)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="136">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (3)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (3)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (3)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (3)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (3)" from_port="example set output" to_op="Text to Nominal (3)" to_port="example set input"/>
+                  <connect from_op="Text to Nominal (3)" from_port="example set output" to_op="Numerical to Real (3)" to_port="example set input"/>
+                  <connect from_op="Numerical to Real (3)" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (7)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="238">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (6)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (6)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (6)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (6)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (6)" from_port="example set output" to_op="Text to Nominal (6)" to_port="example set input"/>
+                  <connect from_op="Text to Nominal (6)" from_port="example set output" to_op="Numerical to Real (6)" to_port="example set input"/>
+                  <connect from_op="Numerical to Real (6)" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <connect from_port="in 1" to_op="Subprocess" to_port="in 1"/>
+              <connect from_port="in 2" to_op="Subprocess (3)" to_port="in 1"/>
+              <connect from_port="in 3" to_op="Subprocess (7)" to_port="in 1"/>
+              <connect from_op="Subprocess" from_port="out 1" to_port="out 1"/>
+              <connect from_op="Subprocess (3)" from_port="out 1" to_port="out 2"/>
+              <connect from_op="Subprocess (7)" from_port="out 1" to_port="out 3"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="source_in 3" spacing="0"/>
+              <portSpacing port="source_in 4" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+              <portSpacing port="sink_out 3" spacing="0"/>
+              <portSpacing port="sink_out 4" spacing="0"/>
+            </process>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Finalize Attributes" width="90" x="179" y="34">
+            <process expanded="true">
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qsub_product\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (2)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qsub_issue\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove sub_issue</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (3)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qconsumer_complaint_narrative\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove consumer_complaint_narrative</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (4)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qcompany_public_response\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove company_public_response</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (5)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qtags\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove tags</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (6)" origin="EXPORTED_TURBOPREP" width="90" x="715" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qconsumer_consent_provided\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove consumer_consent_provided</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (12)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qsub_product\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove sub_product</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (13)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qsub_issue\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove sub_issue</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (14)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qconsumer_complaint_narrative\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove consumer_complaint_narrative</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (15)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qcompany_public_response\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove company_public_response</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (16)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qtags\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove tags</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (17)" origin="EXPORTED_TURBOPREP" width="90" x="715" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qconsumer_consent_provided\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove consumer_consent_provided</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (23)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qsub_product\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove sub_product</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (24)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qsub_issue\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove sub_issue</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (25)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qconsumer_complaint_narrative\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove consumer_complaint_narrative</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (26)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qcompany_public_response\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove company_public_response</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (27)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qtags\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove tags</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (28)" origin="EXPORTED_TURBOPREP" width="90" x="715" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qconsumer_consent_provided\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove consumer_consent_provided</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (7)" origin="EXPORTED_TURBOPREP" width="90" x="849" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qdate_received\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove date_received</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (8)" origin="EXPORTED_TURBOPREP" width="90" x="983" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qstate\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove state</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (9)" origin="EXPORTED_TURBOPREP" width="90" x="1117" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qzipcode\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove zipcode</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (10)" origin="EXPORTED_TURBOPREP" width="90" x="1251" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qdate_sent_to_company\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove date_sent_to_company</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (11)" origin="EXPORTED_TURBOPREP" width="90" x="1385" y="34">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qtimely_response\E|\Qconsumer_disputed?\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove timely_response, consumer_disputed?</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (18)" origin="EXPORTED_TURBOPREP" width="90" x="849" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qdate_received\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove date_received</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (19)" origin="EXPORTED_TURBOPREP" width="90" x="983" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qstate\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove state</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (20)" origin="EXPORTED_TURBOPREP" width="90" x="1117" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qzipcode\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove zipcode</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (21)" origin="EXPORTED_TURBOPREP" width="90" x="1251" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qdate_sent_to_company\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove date_sent_to_company</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (22)" origin="EXPORTED_TURBOPREP" width="90" x="1385" y="187">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qtimely_response\E|\Qconsumer_disputed?\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove timely_response, consumer_disputed?</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (29)" origin="EXPORTED_TURBOPREP" width="90" x="849" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qdate_received\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove date_received</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (30)" origin="EXPORTED_TURBOPREP" width="90" x="983" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qstate\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove state</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (31)" origin="EXPORTED_TURBOPREP" width="90" x="1117" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qzipcode\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove zipcode</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (32)" origin="EXPORTED_TURBOPREP" width="90" x="1251" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qdate_sent_to_company\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove date_sent_to_company</description>
+              </operator>
+              <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (33)" origin="EXPORTED_TURBOPREP" width="90" x="1385" y="340">
+                <parameter key="attribute_filter_type" value="regular_expression"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="regular_expression" value="\Qtimely_response\E|\Qconsumer_disputed?\E"/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="true"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Remove timely_response, consumer_disputed?</description>
+              </operator>
+              <connect from_port="in 1" to_op="Select Attributes" to_port="example set input"/>
+              <connect from_port="in 2" to_op="Select Attributes (12)" to_port="example set input"/>
+              <connect from_port="in 3" to_op="Select Attributes (23)" to_port="example set input"/>
+              <connect from_op="Select Attributes" from_port="example set output" to_op="Select Attributes (2)" to_port="example set input"/>
+              <connect from_op="Select Attributes (2)" from_port="example set output" to_op="Select Attributes (3)" to_port="example set input"/>
+              <connect from_op="Select Attributes (3)" from_port="example set output" to_op="Select Attributes (4)" to_port="example set input"/>
+              <connect from_op="Select Attributes (4)" from_port="example set output" to_op="Select Attributes (5)" to_port="example set input"/>
+              <connect from_op="Select Attributes (5)" from_port="example set output" to_op="Select Attributes (6)" to_port="example set input"/>
+              <connect from_op="Select Attributes (6)" from_port="example set output" to_op="Select Attributes (7)" to_port="example set input"/>
+              <connect from_op="Select Attributes (12)" from_port="example set output" to_op="Select Attributes (13)" to_port="example set input"/>
+              <connect from_op="Select Attributes (13)" from_port="example set output" to_op="Select Attributes (14)" to_port="example set input"/>
+              <connect from_op="Select Attributes (14)" from_port="example set output" to_op="Select Attributes (15)" to_port="example set input"/>
+              <connect from_op="Select Attributes (15)" from_port="example set output" to_op="Select Attributes (16)" to_port="example set input"/>
+              <connect from_op="Select Attributes (16)" from_port="example set output" to_op="Select Attributes (17)" to_port="example set input"/>
+              <connect from_op="Select Attributes (17)" from_port="example set output" to_op="Select Attributes (18)" to_port="example set input"/>
+              <connect from_op="Select Attributes (23)" from_port="example set output" to_op="Select Attributes (24)" to_port="example set input"/>
+              <connect from_op="Select Attributes (24)" from_port="example set output" to_op="Select Attributes (25)" to_port="example set input"/>
+              <connect from_op="Select Attributes (25)" from_port="example set output" to_op="Select Attributes (26)" to_port="example set input"/>
+              <connect from_op="Select Attributes (26)" from_port="example set output" to_op="Select Attributes (27)" to_port="example set input"/>
+              <connect from_op="Select Attributes (27)" from_port="example set output" to_op="Select Attributes (28)" to_port="example set input"/>
+              <connect from_op="Select Attributes (28)" from_port="example set output" to_op="Select Attributes (29)" to_port="example set input"/>
+              <connect from_op="Select Attributes (7)" from_port="example set output" to_op="Select Attributes (8)" to_port="example set input"/>
+              <connect from_op="Select Attributes (8)" from_port="example set output" to_op="Select Attributes (9)" to_port="example set input"/>
+              <connect from_op="Select Attributes (9)" from_port="example set output" to_op="Select Attributes (10)" to_port="example set input"/>
+              <connect from_op="Select Attributes (10)" from_port="example set output" to_op="Select Attributes (11)" to_port="example set input"/>
+              <connect from_op="Select Attributes (11)" from_port="example set output" to_port="out 1"/>
+              <connect from_op="Select Attributes (18)" from_port="example set output" to_op="Select Attributes (19)" to_port="example set input"/>
+              <connect from_op="Select Attributes (19)" from_port="example set output" to_op="Select Attributes (20)" to_port="example set input"/>
+              <connect from_op="Select Attributes (20)" from_port="example set output" to_op="Select Attributes (21)" to_port="example set input"/>
+              <connect from_op="Select Attributes (21)" from_port="example set output" to_op="Select Attributes (22)" to_port="example set input"/>
+              <connect from_op="Select Attributes (22)" from_port="example set output" to_port="out 2"/>
+              <connect from_op="Select Attributes (29)" from_port="example set output" to_op="Select Attributes (30)" to_port="example set input"/>
+              <connect from_op="Select Attributes (30)" from_port="example set output" to_op="Select Attributes (31)" to_port="example set input"/>
+              <connect from_op="Select Attributes (31)" from_port="example set output" to_op="Select Attributes (32)" to_port="example set input"/>
+              <connect from_op="Select Attributes (32)" from_port="example set output" to_op="Select Attributes (33)" to_port="example set input"/>
+              <connect from_op="Select Attributes (33)" from_port="example set output" to_port="out 3"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="source_in 3" spacing="0"/>
+              <portSpacing port="source_in 4" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+              <portSpacing port="sink_out 3" spacing="0"/>
+              <portSpacing port="sink_out 4" spacing="0"/>
+              <description align="center" color="transparent" colored="true" height="50" resized="false" width="126" x="34" y="127">Remove sub_product</description>
+            </process>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Column Rename" width="90" x="313" y="34">
+            <process expanded="true">
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                <parameter key="old_name" value="product"/>
+                <parameter key="new_name" value="Product"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">product -&gt; Product</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (2)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                <parameter key="old_name" value="issue"/>
+                <parameter key="new_name" value="Issue"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">issue -&gt; Issue</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (3)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                <parameter key="old_name" value="company"/>
+                <parameter key="new_name" value="Company"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">company -&gt; Company</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="34">
+                <parameter key="attribute_name" value="Company"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Company (ascending)</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (4)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="34">
+                <parameter key="old_name" value="submitted_via"/>
+                <parameter key="new_name" value="Submitted Via"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">submitted_via -&gt; Submitted Via</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (5)" origin="EXPORTED_TURBOPREP" width="90" x="715" y="34">
+                <parameter key="old_name" value="company_response_to_consumer"/>
+                <parameter key="new_name" value="Company Response to Customer"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">company_response_to_consumer -&gt; Company Response to Customer</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (2)" origin="EXPORTED_TURBOPREP" width="90" x="849" y="34">
+                <parameter key="attribute_name" value="complaint_id"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort complaint_id (ascending)</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (6)" origin="EXPORTED_TURBOPREP" width="90" x="983" y="34">
+                <parameter key="old_name" value="complaint_id"/>
+                <parameter key="new_name" value="Complaint ID"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">complaint_id -&gt; Complaint ID</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (7)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="187">
+                <parameter key="old_name" value="product"/>
+                <parameter key="new_name" value="Product"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">product -&gt; Product</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (8)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="187">
+                <parameter key="old_name" value="issue"/>
+                <parameter key="new_name" value="Issue"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">issue -&gt; Issue</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (9)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="187">
+                <parameter key="old_name" value="company"/>
+                <parameter key="new_name" value="Company"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">company -&gt; Company</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (3)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="187">
+                <parameter key="attribute_name" value="Company"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Company (ascending)</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (10)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="187">
+                <parameter key="old_name" value="submitted_via"/>
+                <parameter key="new_name" value="Submitted Via"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">submitted_via -&gt; Submitted Via</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (11)" origin="EXPORTED_TURBOPREP" width="90" x="715" y="187">
+                <parameter key="old_name" value="company_response_to_consumer"/>
+                <parameter key="new_name" value="Company Response to Customer"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">company_response_to_consumer -&gt; Company Response to Customer</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (4)" origin="EXPORTED_TURBOPREP" width="90" x="849" y="187">
+                <parameter key="attribute_name" value="complaint_id"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort complaint_id (ascending)</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (12)" origin="EXPORTED_TURBOPREP" width="90" x="983" y="187">
+                <parameter key="old_name" value="complaint_id"/>
+                <parameter key="new_name" value="Complaint ID"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">complaint_id -&gt; Complaint ID</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (14)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="340">
+                <parameter key="old_name" value="product"/>
+                <parameter key="new_name" value="Product"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">product -&gt; Product</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (15)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="340">
+                <parameter key="old_name" value="issue"/>
+                <parameter key="new_name" value="Issue"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">issue -&gt; Issue</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (16)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="340">
+                <parameter key="old_name" value="company"/>
+                <parameter key="new_name" value="Company"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">company -&gt; Company</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (6)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="340">
+                <parameter key="attribute_name" value="Company"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Company (ascending)</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (17)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="340">
+                <parameter key="old_name" value="submitted_via"/>
+                <parameter key="new_name" value="Submitted Via"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">submitted_via -&gt; Submitted Via</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (18)" origin="EXPORTED_TURBOPREP" width="90" x="715" y="340">
+                <parameter key="old_name" value="company_response_to_consumer"/>
+                <parameter key="new_name" value="Company Response to Customer"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">company_response_to_consumer -&gt; Company Response to Customer</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (7)" origin="EXPORTED_TURBOPREP" width="90" x="849" y="340">
+                <parameter key="attribute_name" value="complaint_id"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort complaint_id (ascending)</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (19)" origin="EXPORTED_TURBOPREP" width="90" x="983" y="340">
+                <parameter key="old_name" value="complaint_id"/>
+                <parameter key="new_name" value="Complaint ID"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">complaint_id -&gt; Complaint ID</description>
+              </operator>
+              <connect from_port="in 1" to_op="Rename (Deprecated)" to_port="example set input"/>
+              <connect from_port="in 2" to_op="Rename (Deprecated) (7)" to_port="example set input"/>
+              <connect from_port="in 3" to_op="Rename (Deprecated) (14)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated)" from_port="example set output" to_op="Rename (Deprecated) (2)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (2)" from_port="example set output" to_op="Rename (Deprecated) (3)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (3)" from_port="example set output" to_op="Sort (Deprecated)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated)" from_port="example set output" to_op="Rename (Deprecated) (4)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (4)" from_port="example set output" to_op="Rename (Deprecated) (5)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (5)" from_port="example set output" to_op="Sort (Deprecated) (2)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (2)" from_port="example set output" to_op="Rename (Deprecated) (6)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (6)" from_port="example set output" to_port="out 1"/>
+              <connect from_op="Rename (Deprecated) (7)" from_port="example set output" to_op="Rename (Deprecated) (8)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (8)" from_port="example set output" to_op="Rename (Deprecated) (9)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (9)" from_port="example set output" to_op="Sort (Deprecated) (3)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (3)" from_port="example set output" to_op="Rename (Deprecated) (10)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (10)" from_port="example set output" to_op="Rename (Deprecated) (11)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (11)" from_port="example set output" to_op="Sort (Deprecated) (4)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (4)" from_port="example set output" to_op="Rename (Deprecated) (12)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (12)" from_port="example set output" to_port="out 2"/>
+              <connect from_op="Rename (Deprecated) (14)" from_port="example set output" to_op="Rename (Deprecated) (15)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (15)" from_port="example set output" to_op="Rename (Deprecated) (16)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (16)" from_port="example set output" to_op="Sort (Deprecated) (6)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (6)" from_port="example set output" to_op="Rename (Deprecated) (17)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (17)" from_port="example set output" to_op="Rename (Deprecated) (18)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (18)" from_port="example set output" to_op="Sort (Deprecated) (7)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (7)" from_port="example set output" to_op="Rename (Deprecated) (19)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (19)" from_port="example set output" to_port="out 3"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="source_in 3" spacing="0"/>
+              <portSpacing port="source_in 4" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+              <portSpacing port="sink_out 3" spacing="0"/>
+              <portSpacing port="sink_out 4" spacing="0"/>
+            </process>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="103" name="Grouping Issues by Company" width="90" x="514" y="34">
+            <process expanded="true">
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (4)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                <process expanded="true">
+                  <operator activated="true" class="blending:pivot" compatibility="9.10.011" expanded="true" height="82" name="Pivot" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="group_by_attributes" value="Company"/>
+                    <parameter key="column_grouping_attribute" value=""/>
+                    <list key="aggregation_attributes">
+                      <parameter key="Issue" value="count"/>
+                    </list>
+                    <parameter key="use_default_aggregation" value="false"/>
+                    <parameter key="default_aggregation_function" value="first"/>
+                  </operator>
+                  <connect from_port="in 1" to_op="Pivot" to_port="input"/>
+                  <connect from_op="Pivot" from_port="output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Aggregate Issue grouped by Company</description>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (8)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="187">
+                <process expanded="true">
+                  <operator activated="true" class="blending:pivot" compatibility="9.10.011" expanded="true" height="82" name="Pivot (2)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="group_by_attributes" value="Company"/>
+                    <parameter key="column_grouping_attribute" value=""/>
+                    <list key="aggregation_attributes">
+                      <parameter key="Issue" value="count"/>
+                    </list>
+                    <parameter key="use_default_aggregation" value="false"/>
+                    <parameter key="default_aggregation_function" value="first"/>
+                  </operator>
+                  <connect from_port="in 1" to_op="Pivot (2)" to_port="input"/>
+                  <connect from_op="Pivot (2)" from_port="output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Aggregate Issue grouped by Company</description>
+              </operator>
+              <connect from_port="in 1" to_op="Subprocess (4)" to_port="in 1"/>
+              <connect from_port="in 2" to_op="Subprocess (8)" to_port="in 1"/>
+              <connect from_op="Subprocess (4)" from_port="out 1" to_port="out 1"/>
+              <connect from_op="Subprocess (8)" from_port="out 1" to_port="out 2"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="source_in 3" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+              <portSpacing port="sink_out 3" spacing="0"/>
+            </process>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Trimming data for Top 50 Companies" width="90" x="782" y="34">
+            <process expanded="true">
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (2)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="34">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (2)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (2)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (2)" origin="EXPORTED_TURBOPREP" width="90" x="404" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (2)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (2)" from_port="example set output" to_op="Text to Nominal (2)" to_port="example set input"/>
+                  <connect from_op="Text to Nominal (2)" from_port="example set output" to_op="Numerical to Real (2)" to_port="example set input"/>
+                  <connect from_op="Numerical to Real (2)" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (13)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="136">
+                <parameter key="old_name" value="count(Issue)"/>
+                <parameter key="new_name" value="Issue"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">count(Issue) -&gt; Issue</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (5)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="136">
+                <parameter key="attribute_name" value="Issue"/>
+                <parameter key="sorting_direction" value="decreasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Issue (descending)</description>
+              </operator>
+              <operator activated="true" class="filter_example_range" compatibility="9.10.011" expanded="true" height="82" name="Filter Example Range" origin="EXPORTED_TURBOPREP" width="90" x="313" y="136">
+                <parameter key="first_example" value="1"/>
+                <parameter key="last_example" value="50"/>
+                <parameter key="invert_filter" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Filter rows [1 : 50]</description>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (5)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="136">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (4)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (4)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (4)" origin="EXPORTED_TURBOPREP" width="90" x="404" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (4)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (4)" from_port="example set output" to_op="Text to Nominal (4)" to_port="example set input"/>
+                  <connect from_op="Text to Nominal (4)" from_port="example set output" to_op="Numerical to Real (4)" to_port="example set input"/>
+                  <connect from_op="Numerical to Real (4)" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (20)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="289">
+                <parameter key="old_name" value="count(Issue)"/>
+                <parameter key="new_name" value="Issue"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">count(Issue) -&gt; Issue</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (8)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="289">
+                <parameter key="attribute_name" value="Issue"/>
+                <parameter key="sorting_direction" value="decreasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Issue (descending)</description>
+              </operator>
+              <operator activated="true" class="filter_example_range" compatibility="9.10.011" expanded="true" height="82" name="Filter Example Range (2)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="289">
+                <parameter key="first_example" value="1"/>
+                <parameter key="last_example" value="50"/>
+                <parameter key="invert_filter" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Filter rows [1 : 50]</description>
+              </operator>
+              <operator activated="true" class="rename" compatibility="9.10.011" expanded="true" height="82" name="Rename (Deprecated) (21)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="289">
+                <parameter key="old_name" value="Issue"/>
+                <parameter key="new_name" value="Count of Issues"/>
+                <list key="rename_additional_attributes"/>
+                <description align="center" color="transparent" colored="false" width="126">Issue -&gt; Count of Issues</description>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (9)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="289">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (7)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (7)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (7)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (7)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (7)" from_port="example set output" to_op="Text to Nominal (7)" to_port="example set input"/>
+                  <connect from_op="Text to Nominal (7)" from_port="example set output" to_op="Numerical to Real (7)" to_port="example set input"/>
+                  <connect from_op="Numerical to Real (7)" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <connect from_port="in 1" to_op="Subprocess (2)" to_port="in 1"/>
+              <connect from_port="in 2" to_op="Rename (Deprecated) (13)" to_port="example set input"/>
+              <connect from_port="in 3" to_op="Rename (Deprecated) (20)" to_port="example set input"/>
+              <connect from_op="Subprocess (2)" from_port="out 1" to_port="out 1"/>
+              <connect from_op="Rename (Deprecated) (13)" from_port="example set output" to_op="Sort (Deprecated) (5)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (5)" from_port="example set output" to_op="Filter Example Range" to_port="example set input"/>
+              <connect from_op="Filter Example Range" from_port="example set output" to_op="Subprocess (5)" to_port="in 1"/>
+              <connect from_op="Subprocess (5)" from_port="out 1" to_port="out 2"/>
+              <connect from_op="Rename (Deprecated) (20)" from_port="example set output" to_op="Sort (Deprecated) (8)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (8)" from_port="example set output" to_op="Filter Example Range (2)" to_port="example set input"/>
+              <connect from_op="Filter Example Range (2)" from_port="example set output" to_op="Rename (Deprecated) (21)" to_port="example set input"/>
+              <connect from_op="Rename (Deprecated) (21)" from_port="example set output" to_op="Subprocess (9)" to_port="in 1"/>
+              <connect from_op="Subprocess (9)" from_port="out 1" to_port="out 3"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="source_in 3" spacing="0"/>
+              <portSpacing port="source_in 4" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+              <portSpacing port="sink_out 3" spacing="0"/>
+              <portSpacing port="sink_out 4" spacing="0"/>
+            </process>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="124" name="Dataset Joining" width="90" x="983" y="34">
+            <process expanded="true">
+              <operator activated="true" class="concurrency:join" compatibility="9.10.011" expanded="true" height="82" name="Join" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                <parameter key="remove_double_attributes" value="true"/>
+                <parameter key="join_type" value="inner"/>
+                <parameter key="use_id_attribute_as_key" value="false"/>
+                <list key="key_attributes">
+                  <parameter key="Company" value="Company"/>
+                </list>
+                <parameter key="keep_both_join_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Join consumer_complaints with consumer_complaints (2) (inner join)</description>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (6)" origin="EXPORTED_TURBOPREP" width="90" x="246" y="34">
+                <process expanded="true">
+                  <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (5)" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="nominal"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="file_path"/>
+                    <parameter key="block_type" value="single_value"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="single_value"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+                  </operator>
+                  <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (5)" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="text"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="text"/>
+                    <parameter key="block_type" value="value_matrix"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_matrix_row_start"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+                  </operator>
+                  <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (5)" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+                    <parameter key="attribute_filter_type" value="value_type"/>
+                    <parameter key="attribute" value=""/>
+                    <parameter key="attributes" value=""/>
+                    <parameter key="use_except_expression" value="false"/>
+                    <parameter key="value_type" value="numeric"/>
+                    <parameter key="use_value_type_exception" value="false"/>
+                    <parameter key="except_value_type" value="real"/>
+                    <parameter key="block_type" value="value_series"/>
+                    <parameter key="use_block_type_exception" value="false"/>
+                    <parameter key="except_block_type" value="value_series_end"/>
+                    <parameter key="invert_selection" value="false"/>
+                    <parameter key="include_special_attributes" value="false"/>
+                    <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+                  </operator>
+                  <connect from_port="in 1" to_op="Nominal to Text (5)" to_port="example set input"/>
+                  <connect from_op="Nominal to Text (5)" from_port="example set output" to_op="Text to Nominal (5)" to_port="example set input"/>
+                  <connect from_op="Text to Nominal (5)" from_port="example set output" to_op="Numerical to Real (5)" to_port="example set input"/>
+                  <connect from_op="Numerical to Real (5)" from_port="example set output" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+                <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+              </operator>
+              <operator activated="true" class="concurrency:join" compatibility="9.10.011" expanded="true" height="82" name="Join (2)" origin="EXPORTED_TURBOPREP" width="90" x="380" y="187">
+                <parameter key="remove_double_attributes" value="true"/>
+                <parameter key="join_type" value="inner"/>
+                <parameter key="use_id_attribute_as_key" value="false"/>
+                <list key="key_attributes">
+                  <parameter key="Company" value="Company"/>
+                </list>
+                <parameter key="keep_both_join_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Join consumer_complaints with consumer_complaints (2) (inner join)</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (9)" origin="EXPORTED_TURBOPREP" width="90" x="514" y="187">
+                <parameter key="attribute_name" value="Count of Issues"/>
+                <parameter key="sorting_direction" value="decreasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Count of Issues (descending)</description>
+              </operator>
+              <operator activated="true" class="sort" compatibility="9.10.011" expanded="true" height="82" name="Sort (Deprecated) (10)" origin="EXPORTED_TURBOPREP" width="90" x="648" y="187">
+                <parameter key="attribute_name" value="Product"/>
+                <parameter key="sorting_direction" value="increasing"/>
+                <description align="center" color="transparent" colored="false" width="126">Sort Product (ascending)</description>
+              </operator>
+              <operator activated="true" class="order_attributes" compatibility="9.10.011" expanded="true" height="82" name="Reorder Attributes" origin="EXPORTED_TURBOPREP" width="90" x="782" y="187">
+                <parameter key="sort_mode" value="user specified"/>
+                <parameter key="attribute_ordering" value="Complaint ID|Company|Product|Submitted Via|Issue|Company Response to Customer|Count of Issues"/>
+                <parameter key="use_regular_expressions" value="false"/>
+                <parameter key="handle_unmatched" value="append"/>
+                <parameter key="sort_direction" value="ascending"/>
+                <description align="center" color="transparent" colored="false" width="126">Ensure order of columns matches the table view.</description>
+              </operator>
+              <connect from_port="in 1" to_op="Join" to_port="left"/>
+              <connect from_port="in 2" to_op="Join" to_port="right"/>
+              <connect from_port="in 3" to_op="Join (2)" to_port="right"/>
+              <connect from_op="Join" from_port="join" to_op="Subprocess (6)" to_port="in 1"/>
+              <connect from_op="Subprocess (6)" from_port="out 1" to_op="Join (2)" to_port="left"/>
+              <connect from_op="Join (2)" from_port="join" to_op="Sort (Deprecated) (9)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (9)" from_port="example set output" to_op="Sort (Deprecated) (10)" to_port="example set input"/>
+              <connect from_op="Sort (Deprecated) (10)" from_port="example set output" to_op="Reorder Attributes" to_port="example set input"/>
+              <connect from_op="Reorder Attributes" from_port="example set output" to_port="out 1"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="source_in 3" spacing="0"/>
+              <portSpacing port="source_in 4" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+            </process>
+          </operator>
+          <connect from_port="in 1" to_op="Unify Data Types" to_port="in 1"/>
+          <connect from_port="in 2" to_op="Unify Data Types" to_port="in 2"/>
+          <connect from_port="in 3" to_op="Unify Data Types" to_port="in 3"/>
+          <connect from_op="Unify Data Types" from_port="out 1" to_op="Finalize Attributes" to_port="in 1"/>
+          <connect from_op="Unify Data Types" from_port="out 2" to_op="Finalize Attributes" to_port="in 2"/>
+          <connect from_op="Unify Data Types" from_port="out 3" to_op="Finalize Attributes" to_port="in 3"/>
+          <connect from_op="Finalize Attributes" from_port="out 1" to_op="Column Rename" to_port="in 1"/>
+          <connect from_op="Finalize Attributes" from_port="out 2" to_op="Column Rename" to_port="in 2"/>
+          <connect from_op="Finalize Attributes" from_port="out 3" to_op="Column Rename" to_port="in 3"/>
+          <connect from_op="Column Rename" from_port="out 1" to_op="Trimming data for Top 50 Companies" to_port="in 1"/>
+          <connect from_op="Column Rename" from_port="out 2" to_op="Grouping Issues by Company" to_port="in 1"/>
+          <connect from_op="Column Rename" from_port="out 3" to_op="Grouping Issues by Company" to_port="in 2"/>
+          <connect from_op="Grouping Issues by Company" from_port="out 1" to_op="Trimming data for Top 50 Companies" to_port="in 2"/>
+          <connect from_op="Grouping Issues by Company" from_port="out 2" to_op="Trimming data for Top 50 Companies" to_port="in 3"/>
+          <connect from_op="Trimming data for Top 50 Companies" from_port="out 1" to_op="Dataset Joining" to_port="in 1"/>
+          <connect from_op="Trimming data for Top 50 Companies" from_port="out 2" to_op="Dataset Joining" to_port="in 2"/>
+          <connect from_op="Trimming data for Top 50 Companies" from_port="out 3" to_op="Dataset Joining" to_port="in 3"/>
+          <connect from_op="Dataset Joining" from_port="out 1" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="source_in 3" spacing="0"/>
+          <portSpacing port="source_in 4" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="operator_toolbox:extract_sentiment" compatibility="2.14.000" expanded="true" height="103" name="Extract Sentiment" width="90" x="380" y="187">
+        <parameter key="model" value="vader"/>
+        <parameter key="text_attribute" value="Issue"/>
+        <parameter key="show_advanced_output" value="true"/>
+        <parameter key="use_default_tokenization_regex" value="true"/>
+        <list key="additional_words"/>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Sentiment Labelling" width="90" x="514" y="187">
+        <process expanded="true">
+          <operator activated="true" class="concurrency:loop_attributes" compatibility="9.10.011" expanded="true" height="82" name="Loop Attributes" width="90" x="45" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QScore\E|\QScoring String\E|\QNegativity\E|\QPositivity\E|\QUncovered Tokens\E|\QTotal Tokens\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="true"/>
+            <parameter key="attribute_name_macro" value="loop_attribute"/>
+            <parameter key="reuse_results" value="true"/>
+            <parameter key="enable_parallel_execution" value="true"/>
+            <process expanded="true">
+              <operator activated="true" class="set_role" compatibility="9.10.011" expanded="true" height="82" name="Set Role (4)" width="90" x="45" y="34">
+                <parameter key="attribute_name" value="%{loop_attribute}"/>
+                <parameter key="target_role" value="regular"/>
+                <list key="set_additional_roles"/>
+              </operator>
+              <connect from_port="input 1" to_op="Set Role (4)" to_port="example set input"/>
+              <connect from_op="Set Role (4)" from_port="example set output" to_port="output 1"/>
+              <portSpacing port="source_input 1" spacing="0"/>
+              <portSpacing port="source_input 2" spacing="0"/>
+              <portSpacing port="sink_output 1" spacing="0"/>
+              <portSpacing port="sink_output 2" spacing="0"/>
+            </process>
+            <description align="center" color="transparent" colored="false" width="126">Change role to 'regular' for Score, Scoring String, Negativity, Positivity, Uncovered Tokens [1 more]</description>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (10)" width="90" x="179" y="34">
+            <process expanded="true">
+              <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (8)" width="90" x="45" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="nominal"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="file_path"/>
+                <parameter key="block_type" value="single_value"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="single_value"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+              </operator>
+              <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (8)" width="90" x="179" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="text"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="text"/>
+                <parameter key="block_type" value="value_matrix"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+              </operator>
+              <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (8)" width="90" x="404" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="numeric"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="real"/>
+                <parameter key="block_type" value="value_series"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_series_end"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+              </operator>
+              <connect from_port="in 1" to_op="Nominal to Text (8)" to_port="example set input"/>
+              <connect from_op="Nominal to Text (8)" from_port="example set output" to_op="Text to Nominal (8)" to_port="example set input"/>
+              <connect from_op="Text to Nominal (8)" from_port="example set output" to_op="Numerical to Real (8)" to_port="example set input"/>
+              <connect from_op="Numerical to Real (8)" from_port="example set output" to_port="out 1"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+            </process>
+            <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+          </operator>
+          <operator activated="true" class="generate_attributes" compatibility="9.10.011" expanded="true" height="82" name="Generate Attributes" origin="GENERATED_TURBOPREP" width="90" x="404" y="34">
+            <list key="function_descriptions">
+              <parameter key="Sentiment" value="if(Score &gt; 0, &quot;positive&quot;, &quot;negative&quot;)"/>
+            </list>
+            <parameter key="keep_all" value="true"/>
+            <description align="center" color="transparent" colored="false" width="126">Generate Sentiment = if(Score == 0, "neutral", if(Score &gt; 0, "positive", "negative"))</description>
+          </operator>
+          <operator activated="true" class="set_role" compatibility="9.10.011" expanded="true" height="82" name="Set Role (2)" width="90" x="672" y="34">
+            <parameter key="attribute_name" value="Score"/>
+            <parameter key="target_role" value="predict ion"/>
+            <list key="set_additional_roles"/>
+            <description align="center" color="transparent" colored="false" width="126">Change role back to 'predict ion' for Score</description>
+          </operator>
+          <operator activated="true" class="order_attributes" compatibility="9.10.011" expanded="true" height="82" name="Reorder Attributes (2)" width="90" x="806" y="34">
+            <parameter key="sort_mode" value="user specified"/>
+            <parameter key="attribute_ordering" value="Complaint ID|Company|Product|Submitted Via|Issue|Company Response to Customer|Count of Issues|Score|Sentiment"/>
+            <parameter key="use_regular_expressions" value="false"/>
+            <parameter key="handle_unmatched" value="append"/>
+            <parameter key="sort_direction" value="ascending"/>
+            <description align="center" color="transparent" colored="false" width="126">Ensure order of columns matches the table view.</description>
+          </operator>
+          <connect from_port="in 1" to_op="Loop Attributes" to_port="input 1"/>
+          <connect from_op="Loop Attributes" from_port="output 1" to_op="Subprocess (10)" to_port="in 1"/>
+          <connect from_op="Subprocess (10)" from_port="out 1" to_op="Generate Attributes" to_port="example set input"/>
+          <connect from_op="Generate Attributes" from_port="example set output" to_op="Set Role (2)" to_port="example set input"/>
+          <connect from_op="Set Role (2)" from_port="example set output" to_op="Reorder Attributes (2)" to_port="example set input"/>
+          <connect from_op="Reorder Attributes (2)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Documnet Preparartion" width="90" x="715" y="187">
+        <process expanded="true">
+          <operator activated="true" class="concurrency:loop_attributes" compatibility="9.10.011" expanded="true" height="82" name="Loop Attributes (2)" width="90" x="45" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QScore\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="true"/>
+            <parameter key="attribute_name_macro" value="loop_attribute"/>
+            <parameter key="reuse_results" value="true"/>
+            <parameter key="enable_parallel_execution" value="true"/>
+            <process expanded="true">
+              <operator activated="true" class="set_role" compatibility="9.10.011" expanded="true" height="82" name="Set Role" width="90" x="45" y="34">
+                <parameter key="attribute_name" value="Uncovered Tokens"/>
+                <parameter key="target_role" value="regular"/>
+                <list key="set_additional_roles"/>
+              </operator>
+              <connect from_port="input 1" to_op="Set Role" to_port="example set input"/>
+              <connect from_op="Set Role" from_port="example set output" to_port="output 1"/>
+              <portSpacing port="source_input 1" spacing="0"/>
+              <portSpacing port="source_input 2" spacing="0"/>
+              <portSpacing port="sink_output 1" spacing="0"/>
+              <portSpacing port="sink_output 2" spacing="0"/>
+            </process>
+            <description align="center" color="transparent" colored="false" width="126">Change role to 'regular' for Score</description>
+          </operator>
+          <operator activated="true" class="subprocess" compatibility="9.10.011" expanded="true" height="82" name="Subprocess (11)" width="90" x="179" y="34">
+            <process expanded="true">
+              <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text" width="90" x="45" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="nominal"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="file_path"/>
+                <parameter key="block_type" value="single_value"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="single_value"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+              </operator>
+              <operator activated="true" class="text_to_nominal" compatibility="9.10.011" expanded="true" height="82" name="Text to Nominal (9)" width="90" x="179" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="text"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="text"/>
+                <parameter key="block_type" value="value_matrix"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+              </operator>
+              <operator activated="true" class="numerical_to_real" compatibility="9.10.011" expanded="true" height="82" name="Numerical to Real (9)" width="90" x="313" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="numeric"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="real"/>
+                <parameter key="block_type" value="value_series"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_series_end"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+              </operator>
+              <connect from_port="in 1" to_op="Nominal to Text" to_port="example set input"/>
+              <connect from_op="Nominal to Text" from_port="example set output" to_op="Text to Nominal (9)" to_port="example set input"/>
+              <connect from_op="Text to Nominal (9)" from_port="example set output" to_op="Numerical to Real (9)" to_port="example set input"/>
+              <connect from_op="Numerical to Real (9)" from_port="example set output" to_port="out 1"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+            </process>
+            <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+          </operator>
+          <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (35)" origin="GENERATED_TURBOPREP" width="90" x="404" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QScore\E|\QComplaint ID\E|\QCompany\E|\QProduct\E|\QSubmitted Via\E|\QCompany Response to Customer\E|\QCount of Issues\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="true"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Remove Score, Complaint ID, Company, Product, Submitted Via [2 more]</description>
+          </operator>
+          <operator activated="true" class="order_attributes" compatibility="9.10.011" expanded="true" height="82" name="Reorder Attributes (3)" width="90" x="629" y="34">
+            <parameter key="sort_mode" value="user specified"/>
+            <parameter key="attribute_ordering" value="Issue|Sentiment"/>
+            <parameter key="use_regular_expressions" value="false"/>
+            <parameter key="handle_unmatched" value="append"/>
+            <parameter key="sort_direction" value="ascending"/>
+            <description align="center" color="transparent" colored="false" width="126">Ensure order of columns matches the table view.</description>
+          </operator>
+          <operator activated="true" class="set_role" compatibility="9.10.011" expanded="true" height="82" name="Set Role (3)" width="90" x="763" y="34">
+            <parameter key="attribute_name" value="Sentiment"/>
+            <parameter key="target_role" value="label"/>
+            <list key="set_additional_roles"/>
+          </operator>
+          <operator activated="true" class="nominal_to_text" compatibility="9.10.011" expanded="true" height="82" name="Nominal to Text (9)" width="90" x="897" y="34">
+            <parameter key="attribute_filter_type" value="all"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="select_attributes" compatibility="9.10.011" expanded="true" height="82" name="Select Attributes (36)" origin="GENERATED_TURBOPREP" width="90" x="1050" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Issue|Sentiment"/>
+            <parameter key="regular_expression" value="\QScore\E|\QComplaint ID\E|\QCompany\E|\QProduct\E|\QSubmitted Via\E|\QCompany Response to Customer\E|\QCount of Issues\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Remove Score, Complaint ID, Company, Product, Submitted Via [2 more]</description>
+          </operator>
+          <connect from_port="in 1" to_op="Loop Attributes (2)" to_port="input 1"/>
+          <connect from_op="Loop Attributes (2)" from_port="output 1" to_op="Subprocess (11)" to_port="in 1"/>
+          <connect from_op="Subprocess (11)" from_port="out 1" to_op="Select Attributes (35)" to_port="example set input"/>
+          <connect from_op="Select Attributes (35)" from_port="example set output" to_op="Reorder Attributes (3)" to_port="example set input"/>
+          <connect from_op="Reorder Attributes (3)" from_port="example set output" to_op="Set Role (3)" to_port="example set input"/>
+          <connect from_op="Set Role (3)" from_port="example set output" to_op="Nominal to Text (9)" to_port="example set input"/>
+          <connect from_op="Nominal to Text (9)" from_port="example set output" to_op="Select Attributes (36)" to_port="example set input"/>
+          <connect from_op="Select Attributes (36)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="text:process_document_from_data" compatibility="9.4.000" expanded="true" height="82" name="Process Documents from Data" width="90" x="849" y="187">
+        <parameter key="create_word_vector" value="true"/>
+        <parameter key="vector_creation" value="TF-IDF"/>
+        <parameter key="add_meta_information" value="true"/>
+        <parameter key="keep_text" value="false"/>
+        <parameter key="prune_method" value="none"/>
+        <parameter key="prune_below_percent" value="3.0"/>
+        <parameter key="prune_above_percent" value="30.0"/>
+        <parameter key="prune_below_rank" value="0.05"/>
+        <parameter key="prune_above_rank" value="0.95"/>
+        <parameter key="datamanagement" value="double_sparse_array"/>
+        <parameter key="data_management" value="auto"/>
+        <parameter key="select_attributes_and_weights" value="false"/>
+        <list key="specify_weights"/>
+        <process expanded="true">
+          <operator activated="true" class="text:tokenize" compatibility="9.4.000" expanded="true" height="68" name="Tokenize" width="90" x="112" y="34">
+            <parameter key="mode" value="non letters"/>
+            <parameter key="characters" value=".:"/>
+            <parameter key="language" value="English"/>
+            <parameter key="max_token_length" value="3"/>
+          </operator>
+          <operator activated="true" class="text:transform_cases" compatibility="9.4.000" expanded="true" height="68" name="Transform Cases" width="90" x="246" y="34">
+            <parameter key="transform_to" value="lower case"/>
+          </operator>
+          <operator activated="true" class="text:filter_stopwords_english" compatibility="9.4.000" expanded="true" height="68" name="Filter Stopwords (English)" width="90" x="380" y="34"/>
+          <connect from_port="document" to_op="Tokenize" to_port="document"/>
+          <connect from_op="Tokenize" from_port="document" to_op="Transform Cases" to_port="document"/>
+          <connect from_op="Transform Cases" from_port="document" to_op="Filter Stopwords (English)" to_port="document"/>
+          <connect from_op="Filter Stopwords (English)" from_port="document" to_port="document 1"/>
+          <portSpacing port="source_document" spacing="0"/>
+          <portSpacing port="sink_document 1" spacing="0"/>
+          <portSpacing port="sink_document 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="concurrency:cross_validation" compatibility="9.10.011" expanded="true" height="145" name="Cross Validation" width="90" x="1050" y="187">
+        <parameter key="split_on_batch_attribute" value="false"/>
+        <parameter key="leave_one_out" value="false"/>
+        <parameter key="number_of_folds" value="10"/>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+        <parameter key="enable_parallel_execution" value="true"/>
+        <process expanded="true">
+          <operator activated="true" class="classification_by_regression" compatibility="9.10.011" expanded="true" height="82" name="Classification by Regression" width="90" x="246" y="34">
+            <process expanded="true">
+              <operator activated="true" class="support_vector_machine" compatibility="9.10.011" expanded="true" height="124" name="SVM" width="90" x="246" y="34">
+                <parameter key="kernel_type" value="dot"/>
+                <parameter key="kernel_gamma" value="1.0"/>
+                <parameter key="kernel_sigma1" value="1.0"/>
+                <parameter key="kernel_sigma2" value="0.0"/>
+                <parameter key="kernel_sigma3" value="2.0"/>
+                <parameter key="kernel_shift" value="1.0"/>
+                <parameter key="kernel_degree" value="2.0"/>
+                <parameter key="kernel_a" value="1.0"/>
+                <parameter key="kernel_b" value="0.0"/>
+                <parameter key="kernel_cache" value="200"/>
+                <parameter key="C" value="0.0"/>
+                <parameter key="convergence_epsilon" value="0.001"/>
+                <parameter key="max_iterations" value="100000"/>
+                <parameter key="scale" value="true"/>
+                <parameter key="calculate_weights" value="true"/>
+                <parameter key="return_optimization_performance" value="true"/>
+                <parameter key="L_pos" value="1.0"/>
+                <parameter key="L_neg" value="1.0"/>
+                <parameter key="epsilon" value="0.0"/>
+                <parameter key="epsilon_plus" value="0.0"/>
+                <parameter key="epsilon_minus" value="0.0"/>
+                <parameter key="balance_cost" value="false"/>
+                <parameter key="quadratic_loss_pos" value="false"/>
+                <parameter key="quadratic_loss_neg" value="false"/>
+                <parameter key="estimate_performance" value="false"/>
+              </operator>
+              <connect from_port="training set" to_op="SVM" to_port="training set"/>
+              <connect from_op="SVM" from_port="model" to_port="model"/>
+              <portSpacing port="source_training set" spacing="0"/>
+              <portSpacing port="sink_model" spacing="0"/>
+            </process>
+          </operator>
+          <connect from_port="training set" to_op="Classification by Regression" to_port="training set"/>
+          <connect from_op="Classification by Regression" from_port="model" to_port="model"/>
+          <portSpacing port="source_training set" spacing="0"/>
+          <portSpacing port="sink_model" spacing="0"/>
+          <portSpacing port="sink_through 1" spacing="0"/>
+        </process>
+        <process expanded="true">
+          <operator activated="true" class="apply_model" compatibility="9.10.011" expanded="true" height="82" name="Apply Model (2)" width="90" x="179" y="34">
+            <list key="application_parameters"/>
+            <parameter key="create_view" value="false"/>
+          </operator>
+          <operator activated="true" class="performance_classification" compatibility="9.10.011" expanded="true" height="82" name="Performance (2)" width="90" x="313" y="34">
+            <parameter key="main_criterion" value="first"/>
+            <parameter key="accuracy" value="true"/>
+            <parameter key="classification_error" value="false"/>
+            <parameter key="kappa" value="false"/>
+            <parameter key="weighted_mean_recall" value="false"/>
+            <parameter key="weighted_mean_precision" value="false"/>
+            <parameter key="spearman_rho" value="false"/>
+            <parameter key="kendall_tau" value="false"/>
+            <parameter key="absolute_error" value="false"/>
+            <parameter key="relative_error" value="false"/>
+            <parameter key="relative_error_lenient" value="false"/>
+            <parameter key="relative_error_strict" value="false"/>
+            <parameter key="normalized_absolute_error" value="false"/>
+            <parameter key="root_mean_squared_error" value="false"/>
+            <parameter key="root_relative_squared_error" value="false"/>
+            <parameter key="squared_error" value="false"/>
+            <parameter key="correlation" value="false"/>
+            <parameter key="squared_correlation" value="false"/>
+            <parameter key="cross-entropy" value="false"/>
+            <parameter key="margin" value="false"/>
+            <parameter key="soft_margin_loss" value="false"/>
+            <parameter key="logistic_loss" value="false"/>
+            <parameter key="skip_undefined_labels" value="true"/>
+            <parameter key="use_example_weights" value="true"/>
+            <list key="class_weights"/>
+          </operator>
+          <connect from_port="model" to_op="Apply Model (2)" to_port="model"/>
+          <connect from_port="test set" to_op="Apply Model (2)" to_port="unlabelled data"/>
+          <connect from_op="Apply Model (2)" from_port="labelled data" to_op="Performance (2)" to_port="labelled data"/>
+          <connect from_op="Performance (2)" from_port="performance" to_port="performance 1"/>
+          <portSpacing port="source_model" spacing="0"/>
+          <portSpacing port="source_test set" spacing="0"/>
+          <portSpacing port="source_through 1" spacing="0"/>
+          <portSpacing port="sink_test set results" spacing="0"/>
+          <portSpacing port="sink_performance 1" spacing="0"/>
+          <portSpacing port="sink_performance 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="text:create_document" compatibility="9.4.000" expanded="true" height="68" name="Create Document" width="90" x="246" y="442">
+        <parameter key="text" value="Credit acceptance refuses to remove the inaccurate account from my credit that they are reporting. This account has been paid and resolved. The remarks reporting are erroneous and devastating to my credit worthiness. "/>
+        <parameter key="add label" value="false"/>
+        <parameter key="label_type" value="nominal"/>
+      </operator>
+      <operator activated="true" class="text:process_documents" compatibility="9.4.000" expanded="true" height="103" name="Process Documents" width="90" x="782" y="442">
+        <parameter key="create_word_vector" value="true"/>
+        <parameter key="vector_creation" value="TF-IDF"/>
+        <parameter key="add_meta_information" value="true"/>
+        <parameter key="keep_text" value="false"/>
+        <parameter key="prune_method" value="none"/>
+        <parameter key="prune_below_percent" value="3.0"/>
+        <parameter key="prune_above_percent" value="30.0"/>
+        <parameter key="prune_below_rank" value="0.05"/>
+        <parameter key="prune_above_rank" value="0.95"/>
+        <parameter key="datamanagement" value="double_sparse_array"/>
+        <parameter key="data_management" value="auto"/>
+        <process expanded="true">
+          <operator activated="true" class="text:tokenize" compatibility="9.4.000" expanded="true" height="68" name="Tokenize (2)" width="90" x="246" y="34">
+            <parameter key="mode" value="non letters"/>
+            <parameter key="characters" value=".:"/>
+            <parameter key="language" value="English"/>
+            <parameter key="max_token_length" value="3"/>
+          </operator>
+          <operator activated="true" class="text:transform_cases" compatibility="9.4.000" expanded="true" height="68" name="Transform Cases (2)" width="90" x="380" y="34">
+            <parameter key="transform_to" value="lower case"/>
+          </operator>
+          <operator activated="true" class="text:filter_stopwords_english" compatibility="9.4.000" expanded="true" height="68" name="Filter Stopwords (English) (2)" width="90" x="514" y="34"/>
+          <connect from_port="document" to_op="Tokenize (2)" to_port="document"/>
+          <connect from_op="Tokenize (2)" from_port="document" to_op="Transform Cases (2)" to_port="document"/>
+          <connect from_op="Transform Cases (2)" from_port="document" to_op="Filter Stopwords (English) (2)" to_port="document"/>
+          <connect from_op="Filter Stopwords (English) (2)" from_port="document" to_port="document 1"/>
+          <portSpacing port="source_document" spacing="0"/>
+          <portSpacing port="sink_document 1" spacing="0"/>
+          <portSpacing port="sink_document 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="9.10.011" expanded="true" height="82" name="Apply Model" width="90" x="1050" y="442">
+        <list key="application_parameters"/>
+        <parameter key="create_view" value="false"/>
+      </operator>
+      <connect from_op="Data Retrieve" from_port="out 1" to_op="Data Preparation" to_port="in 1"/>
+      <connect from_op="Data Retrieve" from_port="out 2" to_op="Data Preparation" to_port="in 2"/>
+      <connect from_op="Data Retrieve" from_port="out 3" to_op="Data Preparation" to_port="in 3"/>
+      <connect from_op="Data Preparation" from_port="out 1" to_op="Extract Sentiment" to_port="exa"/>
+      <connect from_op="Extract Sentiment" from_port="exa" to_op="Sentiment Labelling" to_port="in 1"/>
+      <connect from_op="Sentiment Labelling" from_port="out 1" to_op="Documnet Preparartion" to_port="in 1"/>
+      <connect from_op="Documnet Preparartion" from_port="out 1" to_op="Process Documents from Data" to_port="example set"/>
+      <connect from_op="Process Documents from Data" from_port="example set" to_op="Cross Validation" to_port="example set"/>
+      <connect from_op="Process Documents from Data" from_port="word list" to_op="Process Documents" to_port="word list"/>
+      <connect from_op="Cross Validation" from_port="model" to_op="Apply Model" to_port="model"/>
+      <connect from_op="Cross Validation" from_port="performance 1" to_port="result 1"/>
+      <connect from_op="Create Document" from_port="output" to_op="Process Documents" to_port="documents 1"/>
+      <connect from_op="Process Documents" from_port="example set" to_op="Apply Model" to_port="unlabelled data"/>
+      <connect from_op="Apply Model" from_port="labelled data" to_port="result 2"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+      <description align="left" color="yellow" colored="true" height="50" resized="true" width="1218" x="37" y="33">SENTIMENT ANALYSIS: Detect sentiment in text using a classification model trained on categorized customer complaints to financial institutions to identify the number of 'False Positives'.</description>
+      <description align="left" color="red" colored="true" height="252" resized="true" width="325" x="658" y="97">Step 2. The dataset is processed to extract the words and deliver a word-vector (a numerical representation of the text).</description>
+      <description align="left" color="green" colored="true" height="253" resized="true" width="613" x="37" y="96">Step 1. Import text data and process the same by using Vader Scoring and prepare the final dataset for further analysis of Sentiment.</description>
+      <description align="left" color="blue" colored="true" height="250" resized="true" width="264" x="990" y="98">Step 3. Train a SVM model and validate it to collect the performance data.</description>
+      <description align="left" color="gray" colored="true" height="201" resized="true" width="613" x="37" y="361">Step 4. Create a new document from text (add your own text and try), then process it as the initial ones. The initial word list is an additional input.</description>
+      <description align="left" color="purple" colored="true" height="199" resized="true" width="593" x="659" y="362">Step 4. The model trained with the old&lt;br&gt;texts is applied to the new document.&lt;br&gt;</description>
+      <description align="left" color="yellow" colored="true" height="115" resized="true" width="1213" x="38" y="575">Outputs:&lt;br&gt;&lt;br&gt;- The performance, including accuracy and AUC.&lt;br&gt;- The model applied to the document. The result is the prediction based on the vector that numerically represents the text. The vector is also included in the output.&lt;br/&gt;- The number of False Positives indicating the number of positive feedbacks that were recorded as complaints.</description>
+    </process>
+  </operator>
+</process>
